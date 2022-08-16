@@ -56,7 +56,7 @@ class JoinAcceptPayload:
         a += self.encrypted_payload
         a += mic
 
-        cipher = AES.new(bytes(key))
+        cipher = AES.new(bytes(key), AES.MODE_ECB)
         self.payload = cipher.encrypt(bytes(a))[:-4]
 
         self.appnonce = self.payload[:3]
@@ -75,7 +75,7 @@ class JoinAcceptPayload:
         a += self.to_clear_raw()
         a += self.compute_mic(key, direction, mhdr)
 
-        cipher = AES.new(bytes(key))
+        cipher = AES.new(bytes(key), AES.MODE_ECB)
         return list(map(int, cipher.decrypt(bytes(a))))
 
     def derive_nwskey(self, key, devnonce):
@@ -85,7 +85,7 @@ class JoinAcceptPayload:
         a += devnonce
         a += [0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00]
 
-        cipher = AES.new(bytes(key))
+        cipher = AES.new(bytes(key), AES.MODE_ECB)
         return list(map(int, cipher.encrypt(bytes(a))))
 
     def derive_appskey(self, key, devnonce):
@@ -95,5 +95,5 @@ class JoinAcceptPayload:
         a += devnonce
         a += [0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00]
 
-        cipher = AES.new(bytes(key))
+        cipher = AES.new(bytes(key), AES.MODE_ECB)
         return list(map(int, cipher.encrypt(bytes(a))))
