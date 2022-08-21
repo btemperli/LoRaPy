@@ -9,7 +9,11 @@ dotenv.load_dotenv()
 # Get these values from console.helium.com under Device Details.
 key_path = os.environ.get('key_path', 'keys.json')
 if os.path.exists(key_path):
-    filekeys = json.loads(open(key_path).read())
+    contents = open(key_path).read()
+    if contents:
+        filekeys = json.loads(contents)
+    else:
+        filekeys = {}
 else:
     filekeys = {}
 
@@ -34,7 +38,6 @@ def get_keys():
     }
 
 def write(keys, path=key_path):
-    import code;code.interact(local=dict(globals(), **locals())) 
     writable_keys = {}
     for k,v in keys.items():
         if type(v) == bytes:

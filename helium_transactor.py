@@ -118,7 +118,6 @@ class HeliumTransactor(LoRa):
         self.set_mode(MODE.RXCONT)
 
     def transact(self, msg):
-        import code;code.interact(local=dict(globals(), **locals())) 
         self.setup_tx()
         self.tx(json.dumps({"i": self.iter, "s": self.uuid, "m": msg}))
         self.iter = self.iter+1
