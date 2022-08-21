@@ -75,7 +75,6 @@ class LoRaWANotaa(LoRa):
         self.clear_irq_flags(RxDone=1)
         payload = self.read_payload(nocheck=True)
         print("Raw payload: {}".format(payload))
-
         lorawan = LoRaWAN.new(keys.nwskey, keys.appskey)
         lorawan.read(payload)
         decoded = "".join(list(map(chr, lorawan.get_payload())))
@@ -101,18 +100,12 @@ class LoRaWANotaa(LoRa):
         else:
             print("Other packet.")
             downlink = ''
-
-
         self.set_mode(MODE.STDBY)
-
         s = ''
         s += " pkt_snr_value  %f\n" % self.get_pkt_snr_value()
         s += " pkt_rssi_value %d\n" % self.get_pkt_rssi_value()
         s += " rssi_value     %d\n" % self.get_rssi_value()
         s += " msg: %s" % downlink
-        #display.fill(0)
-        #display.text(s, 0, 0, 1)
-        #display.show()
         print(s)
 
     def increment(self):
@@ -132,24 +125,22 @@ class LoRaWANotaa(LoRa):
         self.increment()
 
         lorawan = LoRaWAN.new(keys.nwskey, keys.appskey)
+        base = {'devaddr': keys.devaddr, 'fcnt': self.tx_counter, 'data': list(map(ord, package))}
         if self.ack:
             print('Sending with Ack')
-            lorawan.create(data, {'devaddr': keys.devaddr, 'fcnt': self.tx_counter, 'data': list(map(ord, msg)), 'ack':True})
+            lorawan.create(data, dict(**base, **{'ack':True}))
             self.ack = False
         else:
             print('Sending without Ack')
-            lorawan.create(data, {'devaddr': keys.devaddr, 'fcnt': self.tx_counter, 'data': list(map(ord, msg))})
+            lorawan.create(data, base)
         print(f"tx: {lorawan.to_raw()}")
         self.write_payload(lorawan.to_raw())
         self.set_mode(MODE.TX)
-        # display.fill(0)
-        # display.text('Transmit!', 0, 0, 1)
-        # display.show()
 
     def start(self, msg):
-        msg = json.dumps({"i": self.iter, "s": self.uuid})
+        package = json.dumps({"i": self.iter, "s": self.uuid, "m": msg})
         self.setup_tx()
-        self.tx(msg)
+        self.tx(package)
         while True:
             sleep(.1)
             display.fill(0)
@@ -159,7 +150,7 @@ class LoRaWANotaa(LoRa):
             display.show()
             if test_status["running_ping"] and not last_test or (last_test and (datetime.datetime.now() - last_test).seconds > 5):
                 self.setup_tx()
-                self.tx(False)
+                self.tx(msg, False)
                 self.iter = self.iter+1
                 last_test = datetime.datetime.now()
             if not btnA.value:
@@ -205,7 +196,7 @@ class LoRaWANotaa(LoRa):
         self.reset_ptr_rx()
         self.set_mode(MODE.RXCONT)
 
-def init(msg):
+def init(msg=None):
     lora = LoRaWANotaa(False)
 
     frame = 0
@@ -230,13 +221,7 @@ def init(msg):
 
 
 def main():
-    # parser = argparse.ArgumentParser(add_help=True, description="Trasnmit a LoRa msg")
-    # parser.add_argument("--frame", help="Message frame")
-    # parser.add_argument("--msg", help="tokens file")
-    # args = parser.parse_args()
-    # frame = int(args.frame)
-    init('test')
-    init(frame.frame)
+    init()
 
 if __name__ == "__main__":
     main()
