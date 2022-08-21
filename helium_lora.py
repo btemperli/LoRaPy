@@ -52,7 +52,6 @@ class HeliumLoRa(LoRa):
     #     self.set_mode(MODE.SLEEP)
     #
     def on_rx_done(self):
-        import code;code.interact(local=dict(globals(), **locals())) 
         self.clear_irq_flags(RxDone=1)
         payload = self.read_payload(nocheck=True)
         if self.is_otaaing:
@@ -116,27 +115,27 @@ class HeliumLoRa(LoRa):
         data_file.write(f'frame = {self.tx_counter:d}\n')
         data_file.close()
 
-    def tx(self, msg, conf=False):
-        if conf:
-            data = MHDR.CONF_DATA_UP
-            print('Sending confirmed data up.')
-        else:
-            data = MHDR.UNCONF_DATA_UP
-            print('Sending unconfirmed data up.')            
-        self.increment()
-        lorawan = LoRaWAN.new(keys.nwskey, keys.appskey)
-        base = {'devaddr': keys.devaddr, 'fcnt': self.tx_counter, 'data': list(map(ord, msg))}
-        if self.ack:
-            print('Sending with Ack')
-            lorawan.create(data, dict(**base, **{'ack':True}))
-            self.ack = False
-        else:
-            print('Sending without Ack')
-            lorawan.create(data, base)
-        print(f"tx: {lorawan.to_raw()}")
-        self.write_payload(lorawan.to_raw())
-        self.set_mode(MODE.TX)
-
+    # def tx(self, msg, conf=False):
+    #     if conf:
+    #         data = MHDR.CONF_DATA_UP
+    #         print('Sending confirmed data up.')
+    #     else:
+    #         data = MHDR.UNCONF_DATA_UP
+    #         print('Sending unconfirmed data up.')
+    #     self.increment()
+    #     lorawan = LoRaWAN.new(keys.nwskey, keys.appskey)
+    #     base = {'devaddr': keys.devaddr, 'fcnt': self.tx_counter, 'data': list(map(ord, msg))}
+    #     if self.ack:
+    #         print('Sending with Ack')
+    #         lorawan.create(data, dict(**base, **{'ack':True}))
+    #         self.ack = False
+    #     else:
+    #         print('Sending without Ack')
+    #         lorawan.create(data, base)
+    #     print(f"tx: {lorawan.to_raw()}")
+    #     self.write_payload(lorawan.to_raw())
+    #     self.set_mode(MODE.TX)
+    #
     def set_frame(self,frame):
         self.tx_counter = frame
 
@@ -173,8 +172,6 @@ class HeliumLoRa(LoRa):
     def on_tx_done(self):
         self.clear_irq_flags(TxDone=1)
         print("TxDone")
-
-
         self.set_mode(MODE.SLEEP)
         self.set_dio_mapping([0,0,0,0,0,0])
         self.set_invert_iq(1)
