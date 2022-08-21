@@ -29,8 +29,8 @@ class HeliumLoRa(LoRa):
         self.is_otaaing = False
 
     def otaa(self):
-        self.tx_counter = 1
         self.is_otaaing = True
+        import code;code.interact(local=dict(globals(), **locals())) 
         lorawan = LoRaWAN.new(keys.appkey)
         devnonce = [randrange(256), randrange(256)]
         lorawan.create(MHDR.JOIN_REQUEST, {'deveui': keys.deveui, 'appeui': keys.appeui, 'devnonce': devnonce})
@@ -175,15 +175,17 @@ class HeliumLoRa(LoRa):
         self.set_mode(MODE.SLEEP)
         BOARD.teardown()
 
-    @classmethod
-    def init(cls, verbose=False, ack=True, start_ping=False):
-        BOARD.setup()
-        lora = cls(verbose, ack, start_ping)
+    def init_frame(self):
         frame = 0
         if os.path.exists('frame.txt'):
             with open('frame.txt') as df:
                 for line in df:
                     if m := re.match('^frame\s*=\s*(\d+)', line):
                         frame = int(m.group(1))
-        lora.set_frame(frame)
+        self.set_frame(frame)
+
+    @classmethod
+    def init(cls, verbose=False, ack=True, start_ping=False):
+        BOARD.setup()
+        lora = cls(verbose, ack, start_ping)
         return lora
