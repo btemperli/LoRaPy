@@ -1,3 +1,5 @@
+import time
+
 import adafruit_ssd1306
 from digitalio import DigitalInOut, Direction, Pull
 import board
@@ -35,7 +37,7 @@ def run():
     if not keys.nwskey:
         devaddr, nwskey, appskey = lora.otaa()
     while True:
-        sleep(.1)
+        time.sleep(.1)
         display.fill(0)
         display.text("Test is "+str(lora.test_status["running_ping"]), 0, 0, 1)
         display.text('Time: '+str(lora.test_status["last_message"]), 0, 10, 1)

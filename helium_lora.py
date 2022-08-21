@@ -1,14 +1,16 @@
 #!/usr/bin/env python3
 
+import os
+import re
 import json
 import datetime
 from time import sleep
+from random import randrange
+
 from SX127x.LoRa import LoRa, MODE
 from SX127x.board_config_ada import BOARD
 import LoRaWAN
 from LoRaWAN.MHDR import MHDR
-import os
-import re
 import shortuuid
 
 import helium
@@ -29,6 +31,7 @@ class HeliumLoRa(LoRa):
     def otaa(self):
         self.is_otaaing = True
         lorawan = LoRaWAN.new(keys.appkey)
+        devnonce = [randrange(256), randrange(256)]
         lorawan.create(MHDR.JOIN_REQUEST, {'deveui': keys.deveui, 'appeui': keys.appeui, 'devnonce': devnonce})
         self.write_payload(lorawan.to_raw())
         self.set_mode(MODE.TX)
