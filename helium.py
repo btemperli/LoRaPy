@@ -1,7 +1,6 @@
 import requests
 from helium_authenticator import HeliumAuthenticator
 from helium_transactor import keys, HeliumTransactor
-print(HeliumAuthenticator.authenticate())
 
 class Helium:
     def authenticate(self):
