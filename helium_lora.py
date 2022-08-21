@@ -30,7 +30,6 @@ class HeliumLoRa(LoRa):
 
     def otaa(self):
         self.is_otaaing = True
-        import code;code.interact(local=dict(globals(), **locals())) 
         lorawan = LoRaWAN.new(keys.appkey)
         devnonce = [randrange(256), randrange(256)]
         lorawan.create(MHDR.JOIN_REQUEST, {'deveui': keys.deveui, 'appeui': keys.appeui, 'devnonce': devnonce})
@@ -40,6 +39,7 @@ class HeliumLoRa(LoRa):
         self.set_mode(MODE.SLEEP)
     
     def on_rx_done(self):
+        import code;code.interact(local=dict(globals(), **locals())) 
         self.clear_irq_flags(RxDone=1)
         payload = self.read_payload(nocheck=True)
         if self.is_otaaing:
@@ -147,19 +147,28 @@ class HeliumLoRa(LoRa):
         assert(self.get_agc_auto_on() == 1)
 
     def on_tx_done(self):
-        self.clear_irq_flags(TxDone=1)
         self.set_mode(MODE.SLEEP)
         self.set_dio_mapping([0,0,0,0,0,0])
-        self.set_freq(helium.DOWNFREQ)         
-        self.set_bw(9)
-        self.set_spreading_factor(7)        
-        self.set_pa_config(pa_select=1)
-        if not self.is_otaaing:
-            self.set_sync_word(0x34)
-        self.set_rx_crc(False)
         self.set_invert_iq(1)
         self.reset_ptr_rx()
+        self.set_freq(helium.DOWNFREQ)#915)        
+        self.set_spreading_factor(7)#12)
+        self.set_bw(9) #500Khz
+        self.set_rx_crc(False)#TRUE
         self.set_mode(MODE.RXCONT)
+        # self.clear_irq_flags(TxDone=1)
+        # self.set_mode(MODE.SLEEP)
+        # self.set_dio_mapping([0,0,0,0,0,0])
+        # self.set_freq(helium.DOWNFREQ)
+        # self.set_bw(9)
+        # self.set_spreading_factor(7)
+        # self.set_pa_config(pa_select=1)
+        # if not self.is_otaaing:
+        #     self.set_sync_word(0x34)
+        # self.set_rx_crc(False)
+        # self.set_invert_iq(1)
+        # self.reset_ptr_rx()
+        # self.set_mode(MODE.RXCONT)
 
     def transact(self, msg):
         self.setup_tx()
