@@ -91,19 +91,19 @@ class LoRaWANotaa(LoRa):
         elif lorawan.get_mhdr().get_mtype() == MHDR.CONF_DATA_DOWN:
             print("Confirmed data down.")
             self.ack = True
-            downlink = decoded            
+            downlink = decoded
         elif lorawan.get_mhdr().get_mtype() == MHDR.CONF_DATA_UP:
             print("Confirmed data up.")
-            downlink = decoded                        
+            downlink = decoded
         else:
             print("Other packet.")
             downlink = ''
         self.set_mode(MODE.STDBY)
         s = ''
-        s += " pkt_snr_value  %f\n" % self.get_pkt_snr_value()
-        s += " pkt_rssi_value %d\n" % self.get_pkt_rssi_value()
-        s += " rssi_value     %d\n" % self.get_rssi_value()
-        s += " msg: %s" % downlink
+        s += f" pkt_snr_value  {self.get_pkt_snr_value():.2f}\n"
+        s += f" pkt_rssi_value {self.get_pkt_rssi_value():d}\n"
+        s += f" rssi_value     {self.get_rssi_value():d}\n"
+        s += f" msg: {downlink}"
         print(s)
 
     def increment(self):
@@ -119,7 +119,7 @@ class LoRaWANotaa(LoRa):
             print('Sending confirmed data up.')
         else:
             data = MHDR.UNCONF_DATA_UP
-            print('Sending unconfirmed data up.')            
+            print('Sending unconfirmed data up.')
         self.increment()
 
         lorawan = LoRaWAN.new(keys.nwskey, keys.appskey)
@@ -137,7 +137,6 @@ class LoRaWANotaa(LoRa):
 
     def start(self, msg):
         package = json.dumps({"i": self.iter, "s": self.uuid, "m": msg})
-        import code;code.interact(local=dict(globals(), **locals())) 
         self.setup_tx()
         while True:
             sleep(.1)
@@ -149,8 +148,8 @@ class LoRaWANotaa(LoRa):
 
             if self.test_status["running_ping"] and (datetime.datetime.now() - self.last_test).seconds > 5:
                 self.setup_tx()
-                print("Sending LoRaWAN tx\n")
-                self.tx(package)
+                print("Sending LoRaWAN tx with conf\n")
+                self.tx(package, conf=True)
                 self.iter = self.iter+1
                 self.last_test = datetime.datetime.now()
             if not btnA.value:
@@ -180,15 +179,15 @@ class LoRaWANotaa(LoRa):
         self.set_sync_word(0x34)
         self.set_rx_crc(True)
         self.set_invert_iq(0)
-        assert(self.get_agc_auto_on() == 1)        
+        assert(self.get_agc_auto_on() == 1)
 
     def on_tx_done(self):
         self.clear_irq_flags(TxDone=1)
         self.set_mode(MODE.SLEEP)
         self.set_dio_mapping([0,0,0,0,0,0])
-        self.set_freq(helium.DOWNFREQ)         
+        self.set_freq(helium.DOWNFREQ)
         self.set_bw(9)
-        self.set_spreading_factor(7)        
+        self.set_spreading_factor(7)
         self.set_pa_config(pa_select=1)
         self.set_sync_word(0x34)
         self.set_rx_crc(False)
@@ -221,8 +220,10 @@ def init(msg=None, start_ping=False):
 
 def main():
     start_ping = False
-    if len(sys.argv) > 1 and sys.argv[1] == 'start':
+    if 'start' in sys.argv:
         start_ping = True
+    if 'debug' in sys.argv:
+        import code;code.interact(local=dict(globals(), **locals()))
     init(start_ping=start_ping)
 
 if __name__ == "__main__":
