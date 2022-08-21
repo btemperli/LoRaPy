@@ -4,6 +4,7 @@ import time
 import adafruit_ssd1306
 from SX127x.LoRa import LoRa, MODE
 from digitalio import DigitalInOut, Direction, Pull
+from SX127x.board_config_ada import BOARD
 import board
 import busio
 
