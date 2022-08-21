@@ -8,7 +8,11 @@ dotenv.load_dotenv()
 
 # Get these values from console.helium.com under Device Details.
 key_path = os.environ.get('key_path', 'keys.json')
-filekeys = json.loads(open('keys.json').read())
+if os.path.exists(key_path):
+    filekeys = json.loads(open(key_path).read())
+else:
+    filekeys = {}
+
 deveui = bytes.fromhex(os.environ.get('deveui', filekeys.get('deveui', '')))
 appeui = bytes.fromhex(os.environ.get('appeui', filekeys.get('appeui', '')))
 appkey = bytes.fromhex(os.environ.get('appkey', filekeys.get('appkey', '')))
