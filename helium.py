@@ -12,7 +12,10 @@ class Helium:
         # if we have never seen the device, build some ... machinery and APIs etc to register this device.
         # response = requests.get("http://somewebsite.com/register_device.json"+some_authentication_information)
         return None
-        
+
+    def get_last_message(self):
+        return self.ht.last_message
+
     def __init__(self, passed_keys=None, verbose=False):
         self.keys = keys.get_keys()
         if not self.keys.get("deveui"):

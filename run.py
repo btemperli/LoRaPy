@@ -39,15 +39,17 @@ def run():
     helium = Helium()
     running_ping = False
     last_test = datetime.datetime.fromtimestamp(0)
+    ping_count = 0
     while True:
         time.sleep(.1)
         display.fill(0)
-        display.text("Test is "+str(lora.test_status["running_ping"]), 0, 0, 1)
-        display.text('Time: '+str(lora.test_status["last_message"]), 0, 10, 1)
-        display.text('Total Pings: '+str(lora.test_status["ping_count"]), 0, 20, 1)
+        display.text("Test is "+str(running_ping), 0, 0, 1)
+        display.text('Time: '+str(helium.get_last_message()), 0, 10, 1)
+        display.text('Total Pings: '+str(ping_count), 0, 20, 1)
         display.show()
         if running_ping and (datetime.datetime.now() - last_test).seconds > 5:
             helium.transact("Test")
+            ping_count += 1
         if not btnA.value:
             running_ping = True
         if not btnB.value:
