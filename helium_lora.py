@@ -29,6 +29,7 @@ class HeliumLoRa(LoRa):
         self.is_otaaing = False
 
     def otaa(self):
+        self.tx_counter = 1
         self.is_otaaing = True
         lorawan = LoRaWAN.new(keys.appkey)
         devnonce = [randrange(256), randrange(256)]
@@ -36,6 +37,7 @@ class HeliumLoRa(LoRa):
         self.write_payload(lorawan.to_raw())
         self.set_mode(MODE.TX)
         sleep(10)
+        self.set_mode(MODE.SLEEP)
     
     def on_rx_done(self):
         self.clear_irq_flags(RxDone=1)
