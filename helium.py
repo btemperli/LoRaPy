@@ -5,6 +5,7 @@ from helium_transactor import keys, HeliumTransactor
 class Helium:
     def authenticate(self):
         authentication = HeliumAuthenticator.authenticate()
+        import code;code.interact(local=dict(globals(), **locals())) 
         cur_keys = self.keys
         for k,v in authentication.items():
             cur_keys[k] = v
