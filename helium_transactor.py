@@ -33,6 +33,7 @@ class HeliumTransactor(LoRa):
         print("Raw payload: {}".format(payload))
         lorawan = LoRaWAN.new(self.keys["nwskey"], self.keys["appskey"])
         decoded = "".join(list(map(chr, lorawan.get_payload())))
+        lorawan.read(payload)
         print(decoded)
         import code;code.interact(local=dict(globals(), **locals())) 
         self.last_message = decoded
