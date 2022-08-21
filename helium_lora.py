@@ -128,9 +128,7 @@ class HeliumLoRa(LoRa):
         self.tx_counter = frame
 
     def setup_tx(self):
-    # Setup
-        if not self.is_otaaing:
-            self.clear_irq_flags(RxDone=1)
+        # Setup
         self.set_mode(MODE.SLEEP)
         self.set_dio_mapping([1,0,0,0,0,0])
         self.set_freq(helium.UPFREQ)
@@ -156,7 +154,8 @@ class HeliumLoRa(LoRa):
         self.set_bw(9)
         self.set_spreading_factor(7)        
         self.set_pa_config(pa_select=1)
-        self.set_sync_word(0x34)
+        if not self.is_otaaing:
+            self.set_sync_word(0x34)
         self.set_rx_crc(False)
         self.set_invert_iq(1)
         self.reset_ptr_rx()
