@@ -34,7 +34,13 @@ def get_keys():
     }
 
 def write(keys, path=key_path):
+    writable_keys = {}
+    for k,v in keys.items():
+        if type(k) == bytes:
+            writable_keys[k] = cur_keys['deveui'].hex()
+        else:
+            writable_keys[k] = v
     f = open(path, 'w')
-    f.write(json.dumps(keys))
+    f.write(json.dumps(writable_keys))
     f.close()
     
