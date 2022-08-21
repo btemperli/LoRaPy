@@ -3,7 +3,7 @@
 import json
 import datetime
 from time import sleep
-from SX127x.LoRa import LoRa
+from SX127x.LoRa import LoRa, MODE
 from SX127x.board_config_ada import BOARD
 import LoRaWAN
 from LoRaWAN.MHDR import MHDR
