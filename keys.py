@@ -43,7 +43,7 @@ def write(keys, path=key_path):
         if type(v) == bytes:
             writable_keys[k] = keys[k].hex()
         else:
-            writable_keys[k] = v
+            writable_keys[k] = json.dumps(v)
     f = open(path, 'w')
     f.write(json.dumps(writable_keys))
     f.close()
