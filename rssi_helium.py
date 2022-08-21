@@ -1,4 +1,5 @@
 #!/usr/bin/env python3
+
 import json
 import sys
 import argparse
@@ -60,13 +61,13 @@ width = display.width
 height = display.height
 
 class LoRaWANotaa(LoRa):
-    def __init__(self, verbose = False, ack=True):
+    def __init__(self, verbose = False, ack=True, start_ping=False):
         super(LoRaWANotaa, self).__init__(verbose)
         self.iter = 0
         self.uuid = shortuuid.uuid()
         self.ack = ack
-        self.test_status = {"running_ping": False, "ping_count": 0, "last_message": None}
-        self.last_test = 0
+        self.test_status = {"running_ping": start_ping, "ping_count": 0, "last_message": None}
+        self.last_test = datetime.datetime.fromtimestamp(0)
 
     def on_rx_done(self):
         self.clear_irq_flags(RxDone=1)
@@ -146,8 +147,10 @@ class LoRaWANotaa(LoRa):
             display.text('Time: '+str(self.test_status["last_message"]), 0, 10, 1)
             display.text('Total Pings: '+str(self.test_status["ping_count"]), 0, 20, 1)
             display.show()
-            if self.test_status["running_ping"] and not self.last_test or (self.last_test and (datetime.datetime.now() - self.last_test).seconds > 5):
+
+            if self.test_status["running_ping"] and (datetime.datetime.now() - self.last_test).seconds > 5:
                 self.setup_tx()
+                print("Sending LoRaWAN tx\n")
                 self.tx(package)
                 self.iter = self.iter+1
                 self.last_test = datetime.datetime.now()
@@ -194,8 +197,8 @@ class LoRaWANotaa(LoRa):
         self.reset_ptr_rx()
         self.set_mode(MODE.RXCONT)
 
-def init(msg=None):
-    lora = LoRaWANotaa(False)
+def init(msg=None, start_ping=False):
+    lora = LoRaWANotaa(False, start_ping=start_ping)
 
     frame = 0
     if os.path.exists('frame.txt'):
@@ -207,7 +210,6 @@ def init(msg=None):
     lora.set_frame(frame)
 
     try:
-        print("Sending LoRaWAN tx\n")
         lora.start(msg)
     except KeyboardInterrupt:
         sys.stdout.flush()
@@ -219,7 +221,10 @@ def init(msg=None):
 
 
 def main():
-    init()
+    start_ping = False
+    if len(sys.argv) > 1 and sys.argv[1] == 'start':
+        start_ping = True
+    init(start_ping=start_ping)
 
 if __name__ == "__main__":
     main()
