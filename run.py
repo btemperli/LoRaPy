@@ -1,23 +1,5 @@
-import sys
-from SX127x.LoRa import LoRa, MODE
-from SX127x.board_config_ada import BOARD
 from helium_authenticator import HeliumAuthenticator
-
-lora = HeliumAuthenticator(True)
-
-
-try:
-    print("Sending LoRaWAN join request\n")
-    lora.start()
-    lora.set_mode(MODE.SLEEP)
-    print(lora)
-except KeyboardInterrupt:
-    sys.stdout.flush()
-    print("\nKeyboardInterrupt")
-finally:
-    sys.stdout.flush()
-    lora.set_mode(MODE.SLEEP)
-    BOARD.teardown()
+print(HeliumAuthenticator.authenticate())
 
 #
 # import sys

@@ -41,14 +41,6 @@ class HeliumAuthenticator(LoRa):
             self.nwskey = lorawan.derive_nwskey(self.devnonce)
             self.appskey = lorawan.derive_appskey(self.devnonce)
             self.authenticated = True
-            print("Got LoRaWAN join accept. Paste these values into keys.py")
-            print(lorawan.valid_mic())
-            print("devaddr = {}".format(lorawan.get_devaddr()))
-            print("nwskey = {}".format(lorawan.derive_nwskey(self.devnonce)))
-            print("appskey = {}".format(lorawan.derive_appskey(self.devnonce)))
-            print("\n")
-            sys.exit(0)
-
         print("Got LoRaWAN message continue listen for join accept")
 
     def on_tx_done(self):
@@ -82,3 +74,21 @@ class HeliumAuthenticator(LoRa):
         self.write_payload(lorawan.to_raw())
         self.set_mode(MODE.TX)
         sleep(10)
+
+    @classmethod
+    def authenticate(cls):
+        lora = cls(True)
+        try:
+            print("Sending LoRaWAN join request\n")
+            lora.start()
+            lora.set_mode(MODE.SLEEP)
+            print(lora)
+        except KeyboardInterrupt:
+            sys.stdout.flush()
+            print("\nKeyboardInterrupt")
+        finally:
+            sys.stdout.flush()
+            lora.set_mode(MODE.SLEEP)
+            BOARD.teardown()
+        return {"devaddr": lora.devaddr, "nwskey": lora.nwskey, "appskey": lora.appskey}
+    
