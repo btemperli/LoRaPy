@@ -13,13 +13,14 @@ import helium_helper
 import keys
 
 class HeliumAuthenticator(LoRa):
-    def __init__(self, verbose = False):
+    def __init__(self, verbose=False, keys=keys.get_keys()):
         super(HeliumAuthenticator, self).__init__(verbose)
         self.authenticated = False
         self.devaddr = None
         self.nwskey = None
         self.appskey = None
         self.devnonce = [randrange(256), randrange(256)]
+        self.keys = keys
 
     def on_rx_done(self):
         print("RxDone")
@@ -30,7 +31,7 @@ class HeliumAuthenticator(LoRa):
         self.set_mode(MODE.SLEEP)
         self.get_all_registers()
         print(self)
-        lorawan = LoRaWAN.new([], keys.appkey)
+        lorawan = LoRaWAN.new([], self.keys["appkey"])
         lorawan.read(payload)
         print(lorawan.get_payload())
         print(lorawan.get_mhdr().get_mversion())
@@ -68,8 +69,8 @@ class HeliumAuthenticator(LoRa):
 
     def start(self):
         self.setup_tx()
-        lorawan = LoRaWAN.new(keys.appkey)
-        lorawan.create(MHDR.JOIN_REQUEST, {'deveui': keys.deveui, 'appeui': keys.appeui, 'devnonce': self.devnonce})
+        lorawan = LoRaWAN.new(self.keys["appkey"])
+        lorawan.create(MHDR.JOIN_REQUEST, {'deveui': self.keys["deveui"], 'appeui': self.keys["appeui"], 'devnonce': self.devnonce})
         self.write_payload(lorawan.to_raw())
         self.set_mode(MODE.TX)
         sleep(10)
