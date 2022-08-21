@@ -74,31 +74,34 @@ class LoRaWANotaa(LoRa):
         # self.set_mode(MODE.TX)            
 
 
-devnonce = [randrange(256), randrange(256)]
-lora = LoRaWANotaa(True)
-
-# Setup
-lora.set_mode(MODE.SLEEP)
-lora.set_dio_mapping([1,0,0,0,0,0])
-lora.set_freq(helium.UPFREQ)
-lora.set_pa_config(pa_select=1)
-lora.set_spreading_factor(7)
-lora.set_pa_config(max_power=0x0F, output_power=0x0E)
-lora.set_sync_word(0x34)
-lora.set_rx_crc(True)
-lora.get_all_registers()
-print(lora)
-assert(lora.get_agc_auto_on() == 1)
-
-try:
-    print("Sending LoRaWAN join request\n")
-    lora.start()
+def main():
+    devnonce = [randrange(256), randrange(256)]
+    lora = LoRaWANotaa(True)
+    # Setup
     lora.set_mode(MODE.SLEEP)
+    lora.set_dio_mapping([1,0,0,0,0,0])
+    lora.set_freq(helium.UPFREQ)
+    lora.set_pa_config(pa_select=1)
+    lora.set_spreading_factor(7)
+    lora.set_pa_config(max_power=0x0F, output_power=0x0E)
+    lora.set_sync_word(0x34)
+    lora.set_rx_crc(True)
+    lora.get_all_registers()
     print(lora)
-except KeyboardInterrupt:
-    sys.stdout.flush()
-    print("\nKeyboardInterrupt")
-finally:
-    sys.stdout.flush()
-    lora.set_mode(MODE.SLEEP)
-    BOARD.teardown()
+    assert(lora.get_agc_auto_on() == 1)
+    try:
+        print("Sending LoRaWAN join request\n")
+        lora.start()
+        lora.set_mode(MODE.SLEEP)
+        print(lora)
+    except KeyboardInterrupt:
+        sys.stdout.flush()
+        print("\nKeyboardInterrupt")
+    finally:
+        sys.stdout.flush()
+        lora.set_mode(MODE.SLEEP)
+        BOARD.teardown()
+
+if __name__ == "__main__":
+    main()
+
