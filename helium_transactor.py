@@ -29,38 +29,24 @@ class HeliumTransactor(LoRa):
     def on_rx_done(self):
         self.clear_irq_flags(RxDone=1)
         payload = self.read_payload(nocheck=True)
-        print("Raw payload: {}".format(payload))
         lorawan = LoRaWAN.new(self.keys["nwskey"], self.keys["appskey"])
         lorawan.read(payload)
         decoded = "".join(list(map(chr, lorawan.get_payload())))
         self.last_message = decoded
-        print("Decoded: {}".format(decoded))
-        print("\n")
         if lorawan.get_mhdr().get_mtype() == MHDR.UNCONF_DATA_DOWN:
-            print("Unconfirmed data down.")
             downlink = decoded
             res = lorawan.mac_payload.get_fhdr().get_fctrl()
             if 0x20 & res != 0: # Check Ack bit.
-                print("Server ack")
                 if len(downlink) == 0:
                     downlink = "Server ack"
         elif lorawan.get_mhdr().get_mtype() == MHDR.CONF_DATA_DOWN:
-            print("Confirmed data down.")
             self.ack = True
             downlink = decoded
         elif lorawan.get_mhdr().get_mtype() == MHDR.CONF_DATA_UP:
-            print("Confirmed data up.")
             downlink = decoded
         else:
-            print("Other packet.")
             downlink = ''
         self.set_mode(MODE.STDBY)
-        s = ''
-        s += f" pkt_snr_value  {self.get_pkt_snr_value():.2f}\n"
-        s += f" pkt_rssi_value {self.get_pkt_rssi_value():d}\n"
-        s += f" rssi_value     {self.get_rssi_value():d}\n"
-        s += f" msg: {downlink}"
-        print(s)
 
     def increment(self):
         self.tx_counter += 1
@@ -71,21 +57,16 @@ class HeliumTransactor(LoRa):
     def tx(self, msg, conf=False):
         if conf:
             data = MHDR.CONF_DATA_UP
-            print('Sending confirmed data up.')
         else:
             data = MHDR.UNCONF_DATA_UP
-            print('Sending unconfirmed data up.')            
         self.increment()
         lorawan = LoRaWAN.new(self.keys["nwskey"], self.keys["appskey"])
         base = {'devaddr': self.keys["devaddr"], 'fcnt': self.tx_counter, 'data': list(map(ord, msg))}
         if self.ack:
-            print('Sending with Ack')
             lorawan.create(data, dict(**base, **{'ack':True}))
             self.ack = False
         else:
-            print('Sending without Ack')
             lorawan.create(data, base)
-        print(f"tx: {lorawan.to_raw()}")
         self.write_payload(lorawan.to_raw())
         self.set_mode(MODE.TX)
 
