@@ -109,7 +109,7 @@ class LoRaWANotaa(LoRa):
         self.tx_counter += 1
 
         data_file = open("frame.txt", "w")
-        data_file.write(f'frame = {{self.tx_counter}}\n')
+        data_file.write(f'frame = {self.tx_counter:d}\n')
         data_file.close()
 
     def tx(self, msg, conf=True):
