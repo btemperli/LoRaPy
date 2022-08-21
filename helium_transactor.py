@@ -18,7 +18,7 @@ import keys
 BOARD.setup()
 class HeliumTransactor(LoRa):
     def __init__(self, verbose=False, keys=keys.get_keys()):
-        super(HeliumLoRa, self).__init__(verbose)
+        super(HeliumTransactor, self).__init__(verbose)
         self.iter = 0
         self.uuid = shortuuid.uuid()
         self.ack = True
