@@ -1,6 +1,7 @@
 from helium import Helium
 helium = Helium()
-helium.transact("Test")
+while True:
+    helium.transact("Test")
 
 # import sys
 # import time
