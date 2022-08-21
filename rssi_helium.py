@@ -122,7 +122,6 @@ class LoRaWANotaa(LoRa):
         self.increment()
 
         lorawan = LoRaWAN.new(keys.nwskey, keys.appskey)
-        list(map(ord, msg))
         base = {'devaddr': keys.devaddr, 'fcnt': self.tx_counter, 'data': list(map(ord, msg))}
         if self.ack:
             print('Sending with Ack')
@@ -149,7 +148,7 @@ class LoRaWANotaa(LoRa):
                 self.setup_tx()
                 self.tx(package, True)
                 self.iter = self.iter+1
-                last_test = datetime.datetime.now()
+                self.last_test = datetime.datetime.now()
             if not btnA.value:
                 self.test_status["running_ping"] = True
             if not btnB.value:
