@@ -142,7 +142,7 @@ class LoRaWANotaa(LoRa):
             sleep(.1)
             display.fill(0)
             display.text("Test is "+str(self.test_status["running_ping"]), 0, 0, 1)
-            display.text('Time: '+str(self.test_status["last_ping_time"]), 0, 10, 1)
+            display.text('Time: '+str(self.test_status["last_message"]), 0, 10, 1)
             display.text('Total Pings: '+str(self.test_status["ping_count"]), 0, 20, 1)
             display.show()
             if self.test_status["running_ping"] and not self.last_test or (self.last_test and (datetime.datetime.now() - self.last_test).seconds > 5):
