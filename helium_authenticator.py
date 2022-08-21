@@ -75,6 +75,7 @@ class HeliumAuthenticator(LoRa):
         assert(self.get_agc_auto_on() == 1)
 
     def start(self):
+        self.setup_tx()
         lorawan = LoRaWAN.new(keys.appkey)
         lorawan.create(MHDR.JOIN_REQUEST, {'deveui': keys.deveui, 'appeui': keys.appeui, 'devnonce': [randrange(256), randrange(256)]})
         self.write_payload(lorawan.to_raw())
