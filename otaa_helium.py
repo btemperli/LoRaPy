@@ -14,7 +14,7 @@ import keys
 
 BOARD.setup()
 parser = LoRaArgumentParser("LoRaWAN sender")
-class LoRaWANotaa(LoRa):
+class HeliumOTAA(HeliumLoRa):
     def __init__(self, verbose = False):
         super(LoRaWANotaa, self).__init__(verbose)
 
