@@ -131,21 +131,32 @@ class HeliumLoRa(LoRa):
 
     def setup_tx(self):
         # Setup
+        # self.set_mode(MODE.SLEEP)
+        # self.set_dio_mapping([1,0,0,0,0,0])
+        # self.set_freq(helium.UPFREQ)
+        # if not self.is_otaaing:
+        #     self.set_bw(7)
+        # else:
+        #     self.set_pa_config(pa_select=1)
+        # self.set_spreading_factor(7)
+        # self.set_pa_config(max_power=0x0F, output_power=0x0E)
+        # self.set_sync_word(0x34)
+        # self.set_rx_crc(True)
+        # if not self.is_otaaing:
+        #     self.set_invert_iq(0)
+        # else:
+        #     self.get_all_registers()
+        # assert(self.get_agc_auto_on() == 1)
         self.set_mode(MODE.SLEEP)
         self.set_dio_mapping([1,0,0,0,0,0])
         self.set_freq(helium.UPFREQ)
-        if not self.is_otaaing:
-            self.set_bw(7)
-        else:
-            self.set_pa_config(pa_select=1)
+        self.set_pa_config(pa_select=1)
         self.set_spreading_factor(7)
         self.set_pa_config(max_power=0x0F, output_power=0x0E)
         self.set_sync_word(0x34)
         self.set_rx_crc(True)
-        if not self.is_otaaing:
-            self.set_invert_iq(0)
-        else:
-            self.get_all_registers()
+        self.get_all_registers()
+        print(self)
         assert(self.get_agc_auto_on() == 1)
 
     def on_tx_done(self):
