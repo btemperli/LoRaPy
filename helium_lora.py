@@ -160,6 +160,10 @@ class HeliumLoRa(LoRa):
         assert(self.get_agc_auto_on() == 1)
 
     def on_tx_done(self):
+        self.clear_irq_flags(TxDone=1)
+        print("TxDone")
+
+
         self.set_mode(MODE.SLEEP)
         self.set_dio_mapping([0,0,0,0,0,0])
         self.set_invert_iq(1)
