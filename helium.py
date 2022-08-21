@@ -5,7 +5,10 @@ from helium_transactor import keys, HeliumTransactor
 class Helium:
     def authenticate(self):
         authentication = HeliumAuthenticator.authenticate()
-        keys.write(dict(**self.keys, **authentication))
+        cur_keys = self.keys
+        for k,v in authentication.items():
+            cur_keys[k] = v
+        keys.write(cur_keys)
         return authentication
             
     def register_device(self):
