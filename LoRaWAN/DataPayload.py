@@ -56,7 +56,7 @@ class DataPayload:
             a += [0x00]
             a += [i+1]
 
-        cipher = AES.new(bytes(key))
+        cipher = AES.new(bytes(key), AES.MODE_ECB)
         s = cipher.encrypt(bytes(a))
 
         padded_payload = []
@@ -84,7 +84,7 @@ class DataPayload:
             a += [0x00]
             a += [i+1]
 
-        cipher = AES.new(bytes(key))
+        cipher = AES.new(bytes(key), AES.MODE_ECB)
         s = cipher.encrypt(bytes(a))
 
         padded_payload = []

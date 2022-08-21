@@ -9,13 +9,39 @@ This fork adds support for the Adafruit LoRA Radio Bonnet with OLED - RFM95W @ 9
 
 It also allows you to connect as a client to the Helium Network.
 
-You must create a device on the Helium Console at https://console.helium.com/
-
-You need to rename "keys_example.py" to "keys.py" and enter you device information from the Helium Console.
 
 
 ## Installation
-To register a device and get a device ID you need to run otaa_helium.py and stores the results in keys.py.
+
+After forking the repo, install the python libs:
+
+    pip3 install -r requirements.txt
+
+## Credentials
+
+The keys can be added to a `./.env` file:
+
+```
+deveui = 1234ASD432
+appeui = 234ASD4321
+appkey = 34ASD43210
+
+devaddr = [00,11,22]
+nwskey = [11,22,33]
+appskey = [22,33,44]
+```
+
+They can also be passed as environment variables:
+
+```
+deveui=1234ASD432 python3 rssi_helium.py
+```
+
+## Registration
+
+You must create a device on the Helium Console at https://console.helium.com/
+
+After copying the device credentials (the first three in the `.env` file, above), run otaa_helium.py, which will get the final three credentials for the `.env` file.
 
 Then you can run tx_helium.py to send messages by specifying the msg and the frame like this:
 

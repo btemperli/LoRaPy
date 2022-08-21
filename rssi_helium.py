@@ -16,13 +16,14 @@ import adafruit_ssd1306
 from digitalio import DigitalInOut, Direction, Pull
 import board
 import busio
+import os
+import re
 import shortuuid
 
 import RPi.GPIO as GPIO
 
 import helium
 import keys
-import frame
 
 # Button A
 btnA = DigitalInOut(board.D5)
@@ -62,7 +63,6 @@ height = display.height
 global test_status
 test_status = {"running_ping": False, "ping_count": 0, "last_ping_time": None}
 #msg = 'None'
-
 class LoRaWANotaa(LoRa):
     def __init__(self, verbose = False, ack=True):
         super(LoRaWANotaa, self).__init__(verbose)
@@ -117,14 +117,12 @@ class LoRaWANotaa(LoRa):
 
     def increment(self):
         self.tx_counter += 1
-        data_file = open("frame.py", "w")
-        data_file.write(
-            'frame = {}\n'.format(self.tx_counter))        
+
+        data_file = open("frame.txt", "w")
+        data_file.write(f'frame = {{self.tx_counter}}\n')
         data_file.close()
 
-    def tx(self, conf=True):
-        #global msg
-        msg = json.dumps({"i": self.iter, "s": self.uuid})
+    def tx(self, msg, conf=True):
         if conf:
             data = MHDR.CONF_DATA_UP
             print('Sending confirmed data up.')
@@ -141,16 +139,17 @@ class LoRaWANotaa(LoRa):
         else:
             print('Sending without Ack')
             lorawan.create(data, {'devaddr': keys.devaddr, 'fcnt': self.tx_counter, 'data': list(map(ord, msg))})
-        print("tx: {}".format(lorawan.to_raw()))
+        print(f"tx: {lorawan.to_raw()}")
         self.write_payload(lorawan.to_raw())
         self.set_mode(MODE.TX)
         # display.fill(0)
         # display.text('Transmit!', 0, 0, 1)
         # display.show()
 
-    def start(self):
-        global test_status
-        last_test = None
+    def start(self, msg):
+        msg = json.dumps({"i": self.iter, "s": self.uuid})
+        self.setup_tx()
+        self.tx(msg)
         while True:
             sleep(.1)
             display.fill(0)
@@ -206,13 +205,21 @@ class LoRaWANotaa(LoRa):
         self.reset_ptr_rx()
         self.set_mode(MODE.RXCONT)
 
-def init(frame):
-    lora = LoRaWANotaa(False, True)
+def init(msg):
+    lora = LoRaWANotaa(False)
+
+    frame = 0
+    if os.path.exists('frame.txt'):
+        with open('frame.txt') as df:
+            for line in df:
+                if m := re.match('^frame\s*=\s*(\d+)', line):
+                    frame = int(m.group(1))
+
     lora.set_frame(frame)
 
     try:
-        print("Starting\n")
-        lora.start()
+        print("Sending LoRaWAN tx\n")
+        lora.start(msg)
     except KeyboardInterrupt:
         sys.stdout.flush()
         print("\nKeyboardInterrupt")
@@ -223,14 +230,12 @@ def init(frame):
 
 
 def main():
-    global frame
-    #global msg
-    global test_status
     # parser = argparse.ArgumentParser(add_help=True, description="Trasnmit a LoRa msg")
     # parser.add_argument("--frame", help="Message frame")
     # parser.add_argument("--msg", help="tokens file")
     # args = parser.parse_args()
     # frame = int(args.frame)
+    init('test')
     init(frame.frame)
 
 if __name__ == "__main__":
