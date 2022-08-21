@@ -58,8 +58,6 @@ class LoRaWANotaa(LoRa):
         
 
     def start(self):
-        self.tx_counter = 1
-
         lorawan = LoRaWAN.new(keys.appkey)
         lorawan.create(MHDR.JOIN_REQUEST, {'deveui': keys.deveui, 'appeui': keys.appeui, 'devnonce': devnonce})
 

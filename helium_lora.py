@@ -30,7 +30,6 @@ class HeliumLoRa(LoRa):
 
     def otaa(self):
         self.setup_tx()
-        self.tx_counter = 1
         lorawan = LoRaWAN.new(keys.appkey)
         devnonce = [randrange(256), randrange(256)]
         lorawan.create(MHDR.JOIN_REQUEST, {'deveui': keys.deveui, 'appeui': keys.appeui, 'devnonce': devnonce})
