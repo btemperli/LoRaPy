@@ -222,5 +222,5 @@ class HeliumLoRa(LoRa):
     @classmethod
     def init(cls, verbose=False, ack=True, start_ping=False):
         lora = cls(verbose, ack, start_ping)
-        self.init_frame()
+        lora.init_frame()
         return lora
