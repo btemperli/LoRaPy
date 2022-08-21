@@ -17,27 +17,15 @@ import helium_helper
 import keys
 BOARD.setup()
 class HeliumTransactor(LoRa):
-    def __init__(self, verbose = False, ack=True, start_ping=False):
+    def __init__(self, verbose=False, keys=keys.get_keys()):
         super(HeliumLoRa, self).__init__(verbose)
         self.iter = 0
         self.uuid = shortuuid.uuid()
-        self.ack = ack
-        self.test_status = {"running_ping": start_ping, "ping_count": 0, "last_message": None}
+        self.ack = True
+        self.test_status = {"ping_count": 0, "last_message": None}
         self.last_tx = datetime.datetime.fromtimestamp(0)
         self.last_message = None
         self.transact_timeout = 5
-        self.is_otaaing = False
-
-    def otaa(self):
-        print(self)
-        self.is_otaaing = True
-        self.setup_tx()
-        lorawan = LoRaWAN.new(keys.appkey)
-        devnonce = [randrange(256), randrange(256)]
-        lorawan.create(MHDR.JOIN_REQUEST, {'deveui': keys.deveui, 'appeui': keys.appeui, 'devnonce': devnonce})
-        self.write_payload(lorawan.to_raw())
-        self.set_mode(MODE.TX)
-        sleep(10)
 
     def on_rx_done(self):
         print("Raw payload: {}".format(payload))
