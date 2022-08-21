@@ -30,10 +30,11 @@ class HeliumTransactor(LoRa):
     def on_rx_done(self):
         self.clear_irq_flags(RxDone=1)
         payload = self.read_payload(nocheck=True)
-        import code;code.interact(local=dict(globals(), **locals())) 
         print("Raw payload: {}".format(payload))
         lorawan = LoRaWAN.new(self.keys["nwskey"], self.keys["appskey"])
         decoded = "".join(list(map(chr, lorawan.get_payload())))
+        print(decoded)
+        import code;code.interact(local=dict(globals(), **locals())) 
         self.last_message = decoded
         self.test_status["last_message"] = decoded
         self.test_status["ping_count"] += 1
