@@ -33,9 +33,18 @@ display = adafruit_ssd1306.SSD1306_I2C(128, 32, i2c, reset=reset_pin)
 width = display.width
 height = display.height
 lora = HeliumLoRa.init(True, True, True)
-lora.otaa()
-lora.set_mode(MODE.SLEEP)
-print(lora)
+try:
+    print("Sending LoRaWAN join request\n")
+    lora.start()
+    lora.set_mode(MODE.SLEEP)
+    print(lora)
+except KeyboardInterrupt:
+    sys.stdout.flush()
+    print("\nKeyboardInterrupt")
+finally:
+    sys.stdout.flush()
+    lora.set_mode(MODE.SLEEP)
+    BOARD.teardown()
 # def run():
 #     lora = HeliumLoRa.init()
 #     if not keys.nwskey:
