@@ -37,8 +37,8 @@ def write(keys, path=key_path):
     import code;code.interact(local=dict(globals(), **locals())) 
     writable_keys = {}
     for k,v in keys.items():
-        if type(k) == bytes:
-            writable_keys[k] = cur_keys['deveui'].hex()
+        if type(v) == bytes:
+            writable_keys[k] = keys[k].hex()
         else:
             writable_keys[k] = v
     f = open(path, 'w')
