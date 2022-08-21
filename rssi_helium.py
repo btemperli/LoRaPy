@@ -147,7 +147,7 @@ class LoRaWANotaa(LoRa):
             display.show()
             if self.test_status["running_ping"] and not self.last_test or (self.last_test and (datetime.datetime.now() - self.last_test).seconds > 5):
                 self.setup_tx()
-                self.tx(package, False)
+                self.tx(package, True)
                 self.iter = self.iter+1
                 last_test = datetime.datetime.now()
             if not btnA.value:
