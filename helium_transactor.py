@@ -118,12 +118,11 @@ class HeliumTransactor(LoRa):
         self.set_mode(MODE.RXCONT)
 
     def transact(self, msg):
-        import code;code.interact(local=dict(globals(), **locals())) 
         self.setup_tx()
         self.tx(json.dumps({"i": self.iter, "s": self.uuid, "m": msg}), True)
         self.iter = self.iter+1
         self.last_tx = datetime.datetime.now()
-        while self.last_message is None and (datetime.datetime.now() - self.last_tx).seconds > self.transact_timeout:
+        while self.last_message is None and (datetime.datetime.now() - self.last_tx).seconds < self.transact_timeout:
             sleep(0.1)
         return self.last_message
 
