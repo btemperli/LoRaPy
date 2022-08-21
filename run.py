@@ -1,6 +1,7 @@
 import time
 
 import adafruit_ssd1306
+from SX127x.LoRa import LoRa, MODE
 from digitalio import DigitalInOut, Direction, Pull
 import board
 import busio
@@ -33,6 +34,8 @@ width = display.width
 height = display.height
 lora = HeliumLoRa.init(True, True, True)
 lora.otaa()
+lora.set_mode(MODE.SLEEP)
+print(lora)
 # def run():
 #     lora = HeliumLoRa.init()
 #     if not keys.nwskey:
