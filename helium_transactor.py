@@ -35,7 +35,6 @@ class HeliumTransactor(LoRa):
         lorawan.read(payload)
         decoded = "".join(list(map(chr, lorawan.get_payload())))
         print(decoded)
-        import code;code.interact(local=dict(globals(), **locals())) 
         self.last_message = decoded
         self.test_status["last_message"] = decoded
         self.test_status["ping_count"] += 1
