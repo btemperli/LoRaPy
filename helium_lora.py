@@ -38,9 +38,7 @@ class HeliumLoRa(LoRa):
         self.write_payload(lorawan.to_raw())
         self.set_mode(MODE.TX)
         sleep(10)
-        print(self)
-        self.set_mode(MODE.SLEEP)
-    #
+
     def on_rx_done(self):
         print("RxDone")
         import code;code.interact(local=dict(globals(), **locals())) 
