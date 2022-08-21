@@ -20,6 +20,7 @@ class HeliumAuthenticator(LoRa):
         self.devaddr = None
         self.nwskey = None
         self.appskey = None
+        self.devnonce = [randrange(256), randrange(256)]
 
     def on_rx_done(self):
         print("RxDone")
@@ -37,14 +38,14 @@ class HeliumAuthenticator(LoRa):
 
         if lorawan.get_mhdr().get_mtype() == MHDR.JOIN_ACCEPT:
             self.devaddr = lorawan.get_devaddr()
-            self.nwskey = lorawan.derive_nwskey(devnonce)
-            self.appskey = lorawan.derive_appskey(devnonce)
+            self.nwskey = lorawan.derive_nwskey(self.devnonce)
+            self.appskey = lorawan.derive_appskey(self.devnonce)
             self.authenticated = True
             print("Got LoRaWAN join accept. Paste these values into keys.py")
             print(lorawan.valid_mic())
             print("devaddr = {}".format(lorawan.get_devaddr()))
-            print("nwskey = {}".format(lorawan.derive_nwskey(devnonce)))
-            print("appskey = {}".format(lorawan.derive_appskey(devnonce)))
+            print("nwskey = {}".format(lorawan.derive_nwskey(self.devnonce)))
+            print("appskey = {}".format(lorawan.derive_appskey(self.devnonce)))
             print("\n")
             sys.exit(0)
 
@@ -77,7 +78,7 @@ class HeliumAuthenticator(LoRa):
     def start(self):
         self.setup_tx()
         lorawan = LoRaWAN.new(keys.appkey)
-        lorawan.create(MHDR.JOIN_REQUEST, {'deveui': keys.deveui, 'appeui': keys.appeui, 'devnonce': [randrange(256), randrange(256)]})
+        lorawan.create(MHDR.JOIN_REQUEST, {'deveui': keys.deveui, 'appeui': keys.appeui, 'devnonce': self.devnonce})
         self.write_payload(lorawan.to_raw())
         self.set_mode(MODE.TX)
         sleep(10)

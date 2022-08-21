@@ -1,3 +1,4 @@
+import sys
 from SX127x.LoRa import LoRa, MODE
 from SX127x.board_config_ada import BOARD
 from helium_authenticator import HeliumAuthenticator
