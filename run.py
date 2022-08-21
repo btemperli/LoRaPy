@@ -31,7 +31,8 @@ display = adafruit_ssd1306.SSD1306_I2C(128, 32, i2c, reset=reset_pin)
 # Clear the display.
 width = display.width
 height = display.height
-
+lora = HeliumLoRa.init(True)
+lora.otaa()
 def run():
     lora = HeliumLoRa.init()
     if not keys.nwskey:

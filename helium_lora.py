@@ -174,9 +174,9 @@ class HeliumLoRa(LoRa):
         BOARD.teardown()
 
     @classmethod
-    def init(cls, start_ping=False):
+    def init(cls, verbose=False, ack=True, start_ping=False):
         BOARD.setup()
-        lora = cls(False, start_ping=start_ping)
+        lora = cls(verbose, ack, start_ping)
         frame = 0
         if os.path.exists('frame.txt'):
             with open('frame.txt') as df:
