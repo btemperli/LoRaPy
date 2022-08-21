@@ -16,7 +16,7 @@ import keys
 
 class HeliumLoRa(LoRa):
     def __init__(self, verbose = False, ack=True, start_ping=False):
-        super(HeliumaLoRa, self).__init__(verbose)
+        super(HeliumLoRa, self).__init__(verbose)
         self.iter = 0
         self.uuid = shortuuid.uuid()
         self.ack = ack

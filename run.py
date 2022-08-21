@@ -27,11 +27,6 @@ i2c = busio.I2C(board.SCL, board.SDA)
 reset_pin = DigitalInOut(board.D4)
 display = adafruit_ssd1306.SSD1306_I2C(128, 32, i2c, reset=reset_pin)
 # Clear the display.
-display.fill(0)
-display.text("Test is ready to start!", 0, 0, 1)
-display.text('Push Left Button', 0, 10, 1)
-display.text('To start test.', 0, 20, 1)
-display.show()
 width = display.width
 height = display.height
 
