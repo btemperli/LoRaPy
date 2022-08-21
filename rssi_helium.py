@@ -69,15 +69,14 @@ class LoRaWANotaa(LoRa):
         self.last_test = 0
 
     def on_rx_done(self):
-        global test_status
         self.clear_irq_flags(RxDone=1)
         payload = self.read_payload(nocheck=True)
         print("Raw payload: {}".format(payload))
         lorawan = LoRaWAN.new(keys.nwskey, keys.appskey)
         lorawan.read(payload)
         decoded = "".join(list(map(chr, lorawan.get_payload())))
-        test_status["last_ping_time"] = decoded.split(" ")[1]
-        test_status["ping_count"] += 1
+        self.test_status["last_ping_time"] = decoded.split(" ")[1]
+        self.test_status["ping_count"] += 1
         print("Decoded: {}".format(decoded))
         print("\n")
         if lorawan.get_mhdr().get_mtype() == MHDR.UNCONF_DATA_DOWN:
@@ -142,9 +141,9 @@ class LoRaWANotaa(LoRa):
         while True:
             sleep(.1)
             display.fill(0)
-            display.text("Test is "+str(test_status["running_ping"]), 0, 0, 1)
-            display.text('Time: '+str(test_status["last_ping_time"]), 0, 10, 1)
-            display.text('Total Pings: '+str(test_status["ping_count"]), 0, 20, 1)
+            display.text("Test is "+str(self.test_status["running_ping"]), 0, 0, 1)
+            display.text('Time: '+str(self.test_status["last_ping_time"]), 0, 10, 1)
+            display.text('Total Pings: '+str(self.test_status["ping_count"]), 0, 20, 1)
             display.show()
             if self.test_status["running_ping"] and not self.last_test or (self.last_test and (datetime.datetime.now() - self.last_test).seconds > 5):
                 self.setup_tx()
@@ -152,9 +151,9 @@ class LoRaWANotaa(LoRa):
                 self.iter = self.iter+1
                 last_test = datetime.datetime.now()
             if not btnA.value:
-                test_status["running_ping"] = True
+                self.test_status["running_ping"] = True
             if not btnB.value:
-                test_status["running_ping"] = False
+                self.test_status["running_ping"] = False
             if not btnC.value:
                 display.fill(0)
                 display.text("Test is shut down!", 0, 0, 1)
