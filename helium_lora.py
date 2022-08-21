@@ -29,17 +29,28 @@ class HeliumLoRa(LoRa):
         self.is_otaaing = False
 
     def otaa(self):
-        print(self)
-        self.is_otaaing = True
+        self.tx_counter = 1
+
         lorawan = LoRaWAN.new(keys.appkey)
         devnonce = [randrange(256), randrange(256)]
         lorawan.create(MHDR.JOIN_REQUEST, {'deveui': keys.deveui, 'appeui': keys.appeui, 'devnonce': devnonce})
+
         self.write_payload(lorawan.to_raw())
         self.set_mode(MODE.TX)
         sleep(10)
-        print(self)
-        self.set_mode(MODE.SLEEP)
-    
+
+    # def otaa(self):
+    #     print(self)
+    #     self.is_otaaing = True
+    #     lorawan = LoRaWAN.new(keys.appkey)
+    #     devnonce = [randrange(256), randrange(256)]
+    #     lorawan.create(MHDR.JOIN_REQUEST, {'deveui': keys.deveui, 'appeui': keys.appeui, 'devnonce': devnonce})
+    #     self.write_payload(lorawan.to_raw())
+    #     self.set_mode(MODE.TX)
+    #     sleep(10)
+    #     print(self)
+    #     self.set_mode(MODE.SLEEP)
+    #
     def on_rx_done(self):
         import code;code.interact(local=dict(globals(), **locals())) 
         self.clear_irq_flags(RxDone=1)
