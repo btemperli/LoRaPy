@@ -59,16 +59,14 @@ display.show()
 width = display.width
 height = display.height
 
-#global msg
-global test_status
-test_status = {"running_ping": False, "ping_count": 0, "last_ping_time": None}
-#msg = 'None'
 class LoRaWANotaa(LoRa):
     def __init__(self, verbose = False, ack=True):
         super(LoRaWANotaa, self).__init__(verbose)
         self.iter = 0
         self.uuid = shortuuid.uuid()
         self.ack = ack
+        self.test_status = {"running_ping": False, "ping_count": 0, "last_ping_time": None}
+        self.last_test = 0
 
     def on_rx_done(self):
         global test_status
@@ -148,7 +146,7 @@ class LoRaWANotaa(LoRa):
             display.text('Time: '+str(test_status["last_ping_time"]), 0, 10, 1)
             display.text('Total Pings: '+str(test_status["ping_count"]), 0, 20, 1)
             display.show()
-            if test_status["running_ping"] and not last_test or (last_test and (datetime.datetime.now() - last_test).seconds > 5):
+            if self.test_status["running_ping"] and not self.last_test or (self.last_test and (datetime.datetime.now() - self.last_test).seconds > 5):
                 self.setup_tx()
                 self.tx(msg, False)
                 self.iter = self.iter+1
