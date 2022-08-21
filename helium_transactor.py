@@ -21,7 +21,6 @@ class HeliumTransactor(LoRa):
         self.iter = 0
         self.uuid = shortuuid.uuid()
         self.ack = True
-        self.test_status = {"ping_count": 0, "last_message": None}
         self.last_tx = datetime.datetime.fromtimestamp(0)
         self.last_message = None
         self.transact_timeout = 5
@@ -34,8 +33,7 @@ class HeliumTransactor(LoRa):
         lorawan = LoRaWAN.new(self.keys["nwskey"], self.keys["appskey"])
         lorawan.read(payload)
         decoded = "".join(list(map(chr, lorawan.get_payload())))
-        self.test_status["last_message"] = decoded
-        self.test_status["ping_count"] += 1
+        self.last_message = decoded
         print("Decoded: {}".format(decoded))
         print("\n")
         if lorawan.get_mhdr().get_mtype() == MHDR.UNCONF_DATA_DOWN:
@@ -127,9 +125,13 @@ class HeliumTransactor(LoRa):
         self.tx(json.dumps({"i": self.iter, "s": self.uuid, "m": msg}), True)
         self.iter = self.iter+1
         self.last_tx = datetime.datetime.now()
-        while self.last_message is None and (datetime.datetime.now() - self.last_tx).seconds < self.transact_timeout:
-            sleep(0.1)
-        return self.last_message
+        while (datetime.datetime.now() - self.last_tx).seconds < self.transact_timeout:
+            if self.last_message is None:
+                sleep(0.1)
+            else:
+                message = self.last_message
+                self.last_message = None
+                return message
 
     def stop(self):
         self.set_mode(MODE.SLEEP)
