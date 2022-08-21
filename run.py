@@ -38,6 +38,7 @@ lora = HeliumLoRa.init(True, True, True)
 try:
     print("Sending LoRaWAN join request\n")
     lora.otaa()
+    time.sleep(10)
     lora.set_mode(MODE.SLEEP)
     print(lora)
 except KeyboardInterrupt:

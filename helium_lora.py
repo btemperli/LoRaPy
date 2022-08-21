@@ -52,6 +52,7 @@ class HeliumLoRa(LoRa):
     #     self.set_mode(MODE.SLEEP)
     #
     def on_rx_done(self):
+        print("RxDone")
         import code;code.interact(local=dict(globals(), **locals())) 
         self.clear_irq_flags(RxDone=1)
         payload = self.read_payload(nocheck=True)
@@ -221,4 +222,5 @@ class HeliumLoRa(LoRa):
     @classmethod
     def init(cls, verbose=False, ack=True, start_ping=False):
         lora = cls(verbose, ack, start_ping)
+        self.init_frame()
         return lora
