@@ -112,7 +112,7 @@ class LoRaWANotaa(LoRa):
         data_file.write(f'frame = {self.tx_counter:d}\n')
         data_file.close()
 
-    def tx(self, msg, conf=True):
+    def tx(self, msg, conf=False):
         if conf:
             data = MHDR.CONF_DATA_UP
             print('Sending confirmed data up.')
