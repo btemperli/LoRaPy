@@ -137,6 +137,7 @@ class LoRaWANotaa(LoRa):
 
     def start(self, msg):
         package = json.dumps({"i": self.iter, "s": self.uuid, "m": msg})
+        import code;code.interact(local=dict(globals(), **locals())) 
         self.setup_tx()
         while True:
             sleep(.1)
