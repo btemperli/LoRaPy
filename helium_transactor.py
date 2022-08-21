@@ -34,8 +34,6 @@ class HeliumTransactor(LoRa):
         lorawan = LoRaWAN.new(self.keys["nwskey"], self.keys["appskey"])
         lorawan.read(payload)
         decoded = "".join(list(map(chr, lorawan.get_payload())))
-        print(decoded)
-        self.last_message = decoded
         self.test_status["last_message"] = decoded
         self.test_status["ping_count"] += 1
         print("Decoded: {}".format(decoded))
@@ -51,19 +49,19 @@ class HeliumTransactor(LoRa):
         elif lorawan.get_mhdr().get_mtype() == MHDR.CONF_DATA_DOWN:
             print("Confirmed data down.")
             self.ack = True
-            downlink = decoded            
+            downlink = decoded
         elif lorawan.get_mhdr().get_mtype() == MHDR.CONF_DATA_UP:
             print("Confirmed data up.")
-            downlink = decoded                        
+            downlink = decoded
         else:
             print("Other packet.")
             downlink = ''
         self.set_mode(MODE.STDBY)
         s = ''
-        s += " pkt_snr_value  %f\n" % self.get_pkt_snr_value()
-        s += " pkt_rssi_value %d\n" % self.get_pkt_rssi_value()
-        s += " rssi_value     %d\n" % self.get_rssi_value()
-        s += " msg: %s" % downlink
+        s += f" pkt_snr_value  {self.get_pkt_snr_value():.2f}\n"
+        s += f" pkt_rssi_value {self.get_pkt_rssi_value():d}\n"
+        s += f" rssi_value     {self.get_rssi_value():d}\n"
+        s += f" msg: {downlink}"
         print(s)
 
     def increment(self):
@@ -97,25 +95,28 @@ class HeliumTransactor(LoRa):
         self.tx_counter = frame
 
     def setup_tx(self):
+    # Setup
+        self.clear_irq_flags(RxDone=1)
         self.set_mode(MODE.SLEEP)
         self.set_dio_mapping([1,0,0,0,0,0])
-        self.set_freq(helium_helper.UPFREQ)
-        self.set_pa_config(pa_select=1)
+        self.set_freq(helium.UPFREQ)
+        self.set_bw(7)
         self.set_spreading_factor(7)
         self.set_pa_config(max_power=0x0F, output_power=0x0E)
         self.set_sync_word(0x34)
         self.set_rx_crc(True)
-        self.get_all_registers()
+        self.set_invert_iq(0)
         assert(self.get_agc_auto_on() == 1)
 
     def on_tx_done(self):
         self.clear_irq_flags(TxDone=1)
         self.set_mode(MODE.SLEEP)
         self.set_dio_mapping([0,0,0,0,0,0])
-        self.set_freq(helium_helper.DOWNFREQ)
+        self.set_freq(helium.DOWNFREQ)
         self.set_bw(9)
         self.set_spreading_factor(7)
         self.set_pa_config(pa_select=1)
+        self.set_sync_word(0x34)
         self.set_rx_crc(False)
         self.set_invert_iq(1)
         self.reset_ptr_rx()
