@@ -15,7 +15,7 @@ import shortuuid
 
 import helium
 import keys
-
+BOARD.setup()
 class HeliumLoRa(LoRa):
     def __init__(self, verbose = False, ack=True, start_ping=False):
         super(HeliumLoRa, self).__init__(verbose)
@@ -29,6 +29,7 @@ class HeliumLoRa(LoRa):
         self.is_otaaing = False
 
     def otaa(self):
+        print(self)
         self.is_otaaing = True
         lorawan = LoRaWAN.new(keys.appkey)
         devnonce = [randrange(256), randrange(256)]
@@ -36,6 +37,7 @@ class HeliumLoRa(LoRa):
         self.write_payload(lorawan.to_raw())
         self.set_mode(MODE.TX)
         sleep(10)
+        print(self)
         self.set_mode(MODE.SLEEP)
     
     def on_rx_done(self):
@@ -194,6 +196,5 @@ class HeliumLoRa(LoRa):
 
     @classmethod
     def init(cls, verbose=False, ack=True, start_ping=False):
-        BOARD.setup()
         lora = cls(verbose, ack, start_ping)
         return lora
