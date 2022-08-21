@@ -7,9 +7,12 @@ import os
 dotenv.load_dotenv()
 
 # Get these values from console.helium.com under Device Details.
-deveui = bytes.fromhex(os.environ.get('deveui'))
-appeui = bytes.fromhex(os.environ.get('appeui'))
-appkey = bytes.fromhex(os.environ.get('appkey'))
+deveui = bytes.fromhex(os.environ.get('deveui', ''))
+appeui = bytes.fromhex(os.environ.get('appeui', ''))
+appkey = bytes.fromhex(os.environ.get('appkey', ''))
+
+if not (deveui and appeui and appkey):
+    raise RuntimeError("sorry, need device keys before running.")
 
 # Fill in these values when you activate the device with otaa_helium.py. 
 devaddr = json.loads(os.environ.get('devaddr', '[]'))
