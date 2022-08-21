@@ -123,15 +123,14 @@ class LoRaWANotaa(LoRa):
         self.increment()
 
         lorawan = LoRaWAN.new(keys.nwskey, keys.appskey)
-        base = {'devaddr': keys.devaddr, 'fcnt': self.tx_counter, 'data': list(map(ord, "blah"))}
-        lorawan.create(data, dict(**base, **{'ack':True}))
-        # if self.ack:
-        #     print('Sending with Ack')
-        #
-        #     self.ack = False
-        # else:
-        #     print('Sending without Ack')
-        #     lorawan.create(data, base)
+        if self.ack:
+            print('Sending with Ack')
+            base = {'devaddr': keys.devaddr, 'fcnt': self.tx_counter, 'data': list(map(ord, msg))}
+            lorawan.create(data, dict(**base, **{'ack':True}))
+            self.ack = False
+        else:
+            print('Sending without Ack')
+            lorawan.create(data, base)
         print(f"tx: {lorawan.to_raw()}")
         self.write_payload(lorawan.to_raw())
         self.set_mode(MODE.TX)
