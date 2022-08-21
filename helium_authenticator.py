@@ -9,7 +9,7 @@ import LoRaWAN
 from LoRaWAN.MHDR import MHDR
 from random import randrange
 import reset_ada
-import helium
+import helium_helper
 import keys
 
 BOARD.setup()
@@ -49,7 +49,7 @@ class HeliumAuthenticator(LoRa):
         self.set_dio_mapping([0,0,0,0,0,0])
         self.set_invert_iq(1)
         self.reset_ptr_rx()
-        self.set_freq(helium.DOWNFREQ)#915)        
+        self.set_freq(helium_helper.DOWNFREQ)#915)        
         self.set_spreading_factor(7)#12)
         self.set_bw(9) #500Khz
         self.set_rx_crc(False)#TRUE
@@ -58,7 +58,7 @@ class HeliumAuthenticator(LoRa):
     def setup_tx(self):
         self.set_mode(MODE.SLEEP)
         self.set_dio_mapping([1,0,0,0,0,0])
-        self.set_freq(helium.UPFREQ)
+        self.set_freq(helium_helper.UPFREQ)
         self.set_pa_config(pa_select=1)
         self.set_spreading_factor(7)
         self.set_pa_config(max_power=0x0F, output_power=0x0E)

@@ -1,2 +1,9 @@
-UPFREQ = 903.9
-DOWNFREQ = 923.3
+from helium_authenticator import HeliumAuthenticator
+from helium_transactor import HeliumTransactor
+print(HeliumAuthenticator.authenticate())
+
+class Helium:
+    
+    @classmethod    
+    def run()
+        if HeliumAuthenticator.authenticate()
