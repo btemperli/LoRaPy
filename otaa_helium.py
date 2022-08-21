@@ -61,7 +61,7 @@ class LoRaWANotaa(LoRa):
 
     def start(self):
         self.tx_counter = 1
-
+        devnonce = [randrange(256), randrange(256)]
         lorawan = LoRaWAN.new(keys.appkey)
         lorawan.create(MHDR.JOIN_REQUEST, {'deveui': keys.deveui, 'appeui': keys.appeui, 'devnonce': devnonce})
 
@@ -75,7 +75,6 @@ class LoRaWANotaa(LoRa):
 
 
 def main():
-    devnonce = [randrange(256), randrange(256)]
     lora = LoRaWANotaa(True)
     # Setup
     lora.set_mode(MODE.SLEEP)
