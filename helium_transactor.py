@@ -15,7 +15,6 @@ import shortuuid
 
 import helium_helper
 import keys
-BOARD.setup()
 class HeliumTransactor(LoRa):
     def __init__(self, verbose=False, keys=keys.get_keys()):
         super(HeliumTransactor, self).__init__(verbose)
@@ -26,10 +25,11 @@ class HeliumTransactor(LoRa):
         self.last_tx = datetime.datetime.fromtimestamp(0)
         self.last_message = None
         self.transact_timeout = 5
+        self.keys = keys
 
     def on_rx_done(self):
         print("Raw payload: {}".format(payload))
-        lorawan = LoRaWAN.new(keys.nwskey, keys.appskey)
+        lorawan = LoRaWAN.new(self.keys["nwskey"], self.keys["appskey"])
         decoded = "".join(list(map(chr, lorawan.get_payload())))
         self.last_message = decoded
         self.test_status["last_message"] = decoded
@@ -76,8 +76,8 @@ class HeliumTransactor(LoRa):
             data = MHDR.UNCONF_DATA_UP
             print('Sending unconfirmed data up.')            
         self.increment()
-        lorawan = LoRaWAN.new(keys.nwskey, keys.appskey)
-        base = {'devaddr': keys.devaddr, 'fcnt': self.tx_counter, 'data': list(map(ord, msg))}
+        lorawan = LoRaWAN.new(self.keys["nwskey"], self.keys["appskey"])
+        base = {'devaddr': self.keys["devaddr"], 'fcnt': self.tx_counter, 'data': list(map(ord, msg))}
         if self.ack:
             print('Sending with Ack')
             lorawan.create(data, dict(**base, **{'ack':True}))
@@ -142,6 +142,7 @@ class HeliumTransactor(LoRa):
 
     @classmethod
     def init(cls, verbose=False, keys=keys.get_keys()):
+        BOARD.setup()
         lora = cls(verbose, keys)
         lora.init_frame()
         return lora

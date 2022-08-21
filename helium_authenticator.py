@@ -12,7 +12,6 @@ import reset_ada
 import helium_helper
 import keys
 
-BOARD.setup()
 class HeliumAuthenticator(LoRa):
     def __init__(self, verbose = False):
         super(HeliumAuthenticator, self).__init__(verbose)
@@ -77,6 +76,7 @@ class HeliumAuthenticator(LoRa):
 
     @classmethod
     def authenticate(cls):
+        BOARD.setup()
         lora = cls(True)
         try:
             print("Sending LoRaWAN join request\n")
