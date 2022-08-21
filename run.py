@@ -37,7 +37,7 @@ height = display.height
 lora = HeliumLoRa.init(True, True, True)
 try:
     print("Sending LoRaWAN join request\n")
-    lora.start()
+    lora.otaa()
     lora.set_mode(MODE.SLEEP)
     print(lora)
 except KeyboardInterrupt:
