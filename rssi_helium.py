@@ -65,7 +65,7 @@ class LoRaWANotaa(LoRa):
         self.iter = 0
         self.uuid = shortuuid.uuid()
         self.ack = ack
-        self.test_status = {"running_ping": False, "ping_count": 0, "last_ping_time": None}
+        self.test_status = {"running_ping": False, "ping_count": 0, "last_message": None}
         self.last_test = 0
 
     def on_rx_done(self):
@@ -75,7 +75,7 @@ class LoRaWANotaa(LoRa):
         lorawan = LoRaWAN.new(keys.nwskey, keys.appskey)
         lorawan.read(payload)
         decoded = "".join(list(map(chr, lorawan.get_payload())))
-        self.test_status["last_ping_time"] = decoded.split(" ")[1]
+        self.test_status["last_message"] = decoded
         self.test_status["ping_count"] += 1
         print("Decoded: {}".format(decoded))
         print("\n")
