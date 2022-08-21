@@ -13,7 +13,7 @@ class Helium:
         # response = requests.get("http://somewebsite.com/register_device.json"+some_authentication_information)
         return None
         
-    def __init__(self):
+    def __init__(self, passed_keys=None, verbose=False):
         self.keys = keys.get_keys()
         if not self.keys.get("deveui"):
             self.register_device()
