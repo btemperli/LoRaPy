@@ -194,7 +194,7 @@ class LoRaWANotaa(LoRa):
         self.set_mode(MODE.RXCONT)
 
 def init(msg=None):
-    lora = LoRaWANotaa(False)
+    lora = LoRaWANotaa(True)
 
     frame = 0
     if os.path.exists('frame.txt'):
