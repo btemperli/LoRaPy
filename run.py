@@ -10,6 +10,8 @@ import board
 import busio
 
 from helium import Helium
+helium = Helium()
+helium.transact("Test")
 # Button A
 btnA = DigitalInOut(board.D5)
 btnA.direction = Direction.INPUT
@@ -37,6 +39,7 @@ height = display.height
 
 def run():
     helium = Helium()
+    helium.transact("Test")
     running_ping = False
     last_test = datetime.datetime.fromtimestamp(0)
     ping_count = 0

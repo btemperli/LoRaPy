@@ -26,6 +26,6 @@ class Helium:
         if not self.keys.get("nwskey"):
             self.authenticate()
         helium_keys = passed_keys or keys.get_keys()
-        self.ht = HeliumTransactor(verbose, helium_keys)
+        self.ht = HeliumTransactor.init(verbose, helium_keys)
         
             

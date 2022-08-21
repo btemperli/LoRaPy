@@ -140,7 +140,7 @@ class HeliumTransactor(LoRa):
         self.set_frame(frame)
 
     @classmethod
-    def init(cls, verbose=False, ack=True, start_ping=False):
-        lora = cls(verbose, ack, start_ping)
+    def init(cls, verbose=False, keys=keys.get_keys()):
+        lora = cls(verbose, keys)
         lora.init_frame()
         return lora
