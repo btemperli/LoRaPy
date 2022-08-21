@@ -22,17 +22,33 @@ class HeliumAuthenticator(LoRa):
         self.appskey = None
 
     def on_rx_done(self):
+        print("RxDone")
+
         self.clear_irq_flags(RxDone=1)
         payload = self.read_payload(nocheck=True)
+        print(payload)
         self.set_mode(MODE.SLEEP)
         self.get_all_registers()
+        print(self)
         lorawan = LoRaWAN.new([], keys.appkey)
         lorawan.read(payload)
+        print(lorawan.get_payload())
+        print(lorawan.get_mhdr().get_mversion())
+
         if lorawan.get_mhdr().get_mtype() == MHDR.JOIN_ACCEPT:
             self.devaddr = lorawan.get_devaddr()
             self.nwskey = lorawan.derive_nwskey(devnonce)
             self.appskey = lorawan.derive_appskey(devnonce)
             self.authenticated = True
+            print("Got LoRaWAN join accept. Paste these values into keys.py")
+            print(lorawan.valid_mic())
+            print("devaddr = {}".format(lorawan.get_devaddr()))
+            print("nwskey = {}".format(lorawan.derive_nwskey(devnonce)))
+            print("appskey = {}".format(lorawan.derive_appskey(devnonce)))
+            print("\n")
+            sys.exit(0)
+
+        print("Got LoRaWAN message continue listen for join accept")
 
     def on_tx_done(self):
         self.clear_irq_flags(TxDone=1)
