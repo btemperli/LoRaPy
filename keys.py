@@ -34,6 +34,7 @@ def get_keys():
     }
 
 def write(keys, path=key_path):
+    import code;code.interact(local=dict(globals(), **locals())) 
     writable_keys = {}
     for k,v in keys.items():
         if type(k) == bytes:
