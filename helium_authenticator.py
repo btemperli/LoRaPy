@@ -15,7 +15,7 @@ import keys
 BOARD.setup()
 class HeliumAuthenticator(LoRa):
     def __init__(self, verbose = False):
-        super(LoRaWANotaa, self).__init__(verbose)
+        super(HeliumAuthenticator, self).__init__(verbose)
         self.authenticated = False
         self.devaddr = None
         self.nwskey = None
