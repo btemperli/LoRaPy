@@ -31,6 +31,7 @@ class HeliumTransactor(LoRa):
         payload = self.read_payload(nocheck=True)
         lorawan = LoRaWAN.new(self.keys["nwskey"], self.keys["appskey"])
         lorawan.read(payload)
+        print(decoded)
         decoded = "".join(list(map(chr, lorawan.get_payload())))
         self.last_message = decoded
         if lorawan.get_mhdr().get_mtype() == MHDR.UNCONF_DATA_DOWN:
