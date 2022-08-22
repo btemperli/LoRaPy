@@ -30,7 +30,8 @@ class HeliumTransactor(LoRa):
         self.clear_irq_flags(RxDone=1)
         payload = self.read_payload(nocheck=True)
         lorawan = LoRaWAN.new(self.keys["nwskey"], self.keys["appskey"])
-        lorawan.read(payload)
+        gz = lorawan.read(payload)
+        print(gz)
         decoded = "".join(list(map(chr, lorawan.get_payload())))
         print(decoded)
         self.last_message = decoded
