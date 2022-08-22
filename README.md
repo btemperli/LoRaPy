@@ -1,3 +1,17 @@
+#RPI install routine
+```
+sudo apt-get install -y tmux htop 
+sudo pip3 install adafruit-circuitpython-ssd1306
+sudo pip3 install adafruit-circuitpython-framebuf
+sudo pip3 install adafruit-circuitpython-rfm9x
+sudo pip3 install adafruit-circuitpython-gps
+sudo pip3 install pycryptodome
+sudo pip3 install shortuuid
+sudo pip3 install python-dotenv
+sudo apt-get install gpsd gpsd-clients
+git clone git@github.com:DGaffney/LoRaWAN.git
+```
+
 # LoRaWAN
 This is a LoRaWAN v1.0 implementation in python.
 
