@@ -31,11 +31,11 @@ class HeliumTransactor(LoRa):
         payload = self.read_payload(nocheck=True)
         lorawan = LoRaWAN.new(self.keys["nwskey"], self.keys["appskey"])
         lorawan.read(payload)
-        gz = lorawan.get_payload()
-        print(gz)
-        decoded = "".join(list(map(chr, gz)))
-        print(decoded)
-        self.last_message = decoded
+        decoded = "".join(list(map(chr, lorawan.get_payload())))
+        try:
+            self.last_message = json.loads(decoded)
+        except:
+            self.last_message = decoded
         if lorawan.get_mhdr().get_mtype() == MHDR.UNCONF_DATA_DOWN:
             downlink = decoded
             res = lorawan.mac_payload.get_fhdr().get_fctrl()
@@ -64,7 +64,7 @@ class HeliumTransactor(LoRa):
             data = MHDR.UNCONF_DATA_UP
         self.increment()
         lorawan = LoRaWAN.new(self.keys["nwskey"], self.keys["appskey"])
-        base = {'devaddr': self.keys["devaddr"], 'fcnt': self.tx_counter, 'data': list(map(ord, "test"))}
+        base = {'devaddr': self.keys["devaddr"], 'fcnt': self.tx_counter, 'data': list(map(ord, msg))}
         if self.ack:
             lorawan.create(data, dict(**base, **{'ack':True}))
             self.ack = False
