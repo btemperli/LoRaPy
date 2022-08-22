@@ -3,7 +3,7 @@ import json
 from helium import Helium
 from gps import get_gps_data
 helium = Helium()
-helium.transact("Test")
+helium.transact({"balh": 1})
 while True:
     gps_data = get_gps_data()
     response = {}

@@ -64,7 +64,7 @@ class HeliumTransactor(LoRa):
             data = MHDR.UNCONF_DATA_UP
         self.increment()
         lorawan = LoRaWAN.new(self.keys["nwskey"], self.keys["appskey"])
-        base = {'devaddr': self.keys["devaddr"], 'fcnt': self.tx_counter, 'data': list(map(ord, msg))}
+        base = {'devaddr': self.keys["devaddr"], 'fcnt': self.tx_counter, 'data': list(map(ord, "test"))}
         if self.ack:
             lorawan.create(data, dict(**base, **{'ack':True}))
             self.ack = False
