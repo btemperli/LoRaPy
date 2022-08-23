@@ -3,3 +3,4 @@ adafruit_blinka
 adafruit-circuitpython-ssd1306
 python-dotenv
 shortuuid
+gpsdclient
