@@ -1,15 +1,23 @@
+import time
 import requests
 from helium_authenticator import HeliumAuthenticator
 from helium_transactor import keys, HeliumTransactor
 
 class Helium:
     def authenticate(self):
-        authentication = HeliumAuthenticator.authenticate()
-        cur_keys = self.keys
-        for k,v in authentication.items():
-            cur_keys[k] = v
-        keys.write(cur_keys)
-        return authentication
+        try_count = 0
+        while try_count < 5:
+            try:
+                authentication = HeliumAuthenticator.authenticate()
+                cur_keys = self.keys
+                for k,v in authentication.items():
+                    cur_keys[k] = v
+                keys.write(cur_keys)
+            except:
+                print("Failed Auth")
+                try_count += 1
+                time.sleep(3)
+            return authentication
             
     def register_device(self):
         # if we have never seen the device, build some ... machinery and APIs etc to register this device.
