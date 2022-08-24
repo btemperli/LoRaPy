@@ -106,7 +106,9 @@ class HeliumTransactor(LoRa):
 
     def transact(self, msg):
         self.setup_tx()
-        self.tx(json.dumps({"i": self.iter, "s": self.uuid, "m": msg}), True)
+        self.tx(msg, True)
+        # Full package - too heavy:
+        # self.tx(json.dumps({"i": self.iter, "s": self.uuid, "m": msg}), True)
         self.iter = self.iter+1
         self.last_tx = datetime.datetime.now()
         while (datetime.datetime.now() - self.last_tx).seconds < self.transact_timeout:
