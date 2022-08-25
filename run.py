@@ -15,7 +15,7 @@ helium = Helium()
 last_gps = {}
 while True:
     try:
-        response, last_gps = fire_ping()
+        response, last_gps = fire_ping(last_gps)
         print(response)
         time.sleep(int(response or "10"))
         #time.sleep(response.get("next_ping_at", 10))
