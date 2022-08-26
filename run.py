@@ -18,7 +18,7 @@ logger.addHandler(file_handler)
 def fire_ping(last_gps):
     logging.info('Last GPS was '+str(last_gps))
     gps_data = get_gps_data()
-    logging.info('Latest GPS is '+str(gps_date))
+    logging.info('Latest GPS is '+str(gps_data))
     response = {}
     if gps_data and not last_gps or (last_gps.get("lat") and last_gps.get("lon") and gps_data.get("lat") and gps_data.get("lon") and get_dist(gps_data["lat"], gps_data["lon"], last_gps["lat"], last_gps["lon"])) > 0.05:
         logging.info('Wont send ping')
