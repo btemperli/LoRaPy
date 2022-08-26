@@ -21,6 +21,30 @@ def get_dist(lat1,lon1,lat2,lon2):
     dlon = lon2 - lon1
     dlat = lat2 - lat1
     a = sin(dlat / 2)**2 + cos(lat1) * cos(lat2) * sin(dlon / 2)**2
+    print(a)
+    if not a:
+        return 0
     c = 2 * atan2(sqrt(a), sqrt(1 - a))
     distance = R * c
-    return distance or 10000
+    return distance
+
+def should_send_gps(new, old, last_sent_at):
+    if last_sent_at is None:
+        return True
+    if not new:
+        return False
+    if new and not old:
+        return True
+    if new.get("lat") is not None and  new.get("lon") is not None and None in [old.get("lat"), old.get("lon")]:
+        return True
+    if None not in [new["lat"], new["lon"], old["lat"], old["lon"]]:
+        distance = get_dist(new["lat"], new["lon"], old["lat"], old["lon"])
+        if distance < 0.05:
+            if (datetime.datetime.now() - last_sent_at).seconds > 60*5:
+                return True
+            else:
+                return False
+        else:
+            return True
+    else:
+        return False
