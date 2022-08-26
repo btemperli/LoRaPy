@@ -32,10 +32,11 @@ def fire_ping(last_gps, last_sent_at):
         logging.info('Will send ping')
         response = helium.transact(str(round(gps_data["lat"], 5))+","+str(round(gps_data["lon"], 5))+","+str(int(gps_data["speed"] or 0)))
         last_sent_at = datetime.datetime.now()
+        last_gps = gps_data
         logging.info('Ping response was '+str(response))
     else:
         logging.info('Wont send ping')
-    return response, gps_data, last_sent_at
+    return response, last_gps, last_sent_at
 
 helium = Helium()
 last_gps = {}
@@ -43,7 +44,6 @@ last_sent_at = None
 while True:
     try:
         response, last_gps, last_sent_at = fire_ping(last_gps, last_sent_at)
-        print(response)
         time.sleep(int(response or "10"))
         #time.sleep(response.get("next_ping_at", 10))
     except:
